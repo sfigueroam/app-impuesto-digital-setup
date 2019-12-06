@@ -1,0 +1,12 @@
+version: 0.2
+phases:
+    build:
+        commands:
+            - aws s3 cp s3://${S3_BUCKET}/tmp s3://${S3_BUCKET} --recursive --acl public-read
+            - aws s3 rm s3://${S3_BUCKET}/tmp --recursive
+            - aws cloudfront create-invalidation --distribution-id ${BUILD_CLOUDFRONT_ID} --paths /*
+artifacts:
+    files:
+        - '**/*'
+    discard-paths: yes
+

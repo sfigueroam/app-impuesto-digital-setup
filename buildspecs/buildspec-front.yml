@@ -1,0 +1,27 @@
+version: 0.2
+phases:
+    install:
+        commands:
+            - cd front
+            # Replace variable whit sed command in environment file
+            - touch ${CODEBUILD_SRC_DIR}/front/src/environments/environment.ts
+            - cp ${CODEBUILD_SRC_DIR}/front/src/environments/environment.template.ts ${CODEBUILD_SRC_DIR}/front/src/environments/environment.prod.ts
+            #- sed -i "s;BUILD_ENV_EXAMPLE;${BUILD_ENV_EXAMPLE};g" ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts
+            - sudo apt-get update -y
+            - npm install -g @angular/cli@6.0.8
+            - npm install
+
+    build:
+        commands:
+            - cd ${CODEBUILD_SRC_DIR}/front
+            - more ${CODEBUILD_SRC_DIR}/front/src/environments/environment.prod.ts
+            - ng build --prod
+
+    post_build:
+        commands:
+            - aws s3 cp dist/front s3://${S3_BUCKET}/tmp --recursive --acl public-read
+artifacts:
+    files:
+        - '**/*'
+    discard-paths: yes
+    base-directory: 'dist*'
