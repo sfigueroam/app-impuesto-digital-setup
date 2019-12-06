@@ -13,7 +13,7 @@ variable "appName" {
 
 variable "cognitoProviders" {
   type = "list"
-  default = ["ClaveUnica","COGNITO"]
+  default = ["ClaveUnica","ClaveTesoreria"]
 }
 
 variable "cognitoReadAttributes" {
