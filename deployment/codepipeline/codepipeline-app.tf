@@ -39,6 +39,10 @@ variable "apiGatewayRootID" {
   type = "string"
 }
 
+variable "apigatewayEndpoint" {
+  type = "string"
+}
+
 variable "lambdaRoleArn" {
   type = "string"
 }
@@ -106,9 +110,8 @@ variable "branch" {
 
 ################################### parameters ssm ###################################
 ########## Definicion de parametros requeridos por codebuild front y back ############
-
-resource "aws_ssm_parameter" "defaultParameterBack" {
-  name  = "/tgr/${var.env}/${var.appName}/back/default/parameter"
+resource "aws_ssm_parameter" "grant-type" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/grant-type"
   type  = "String"
   value = "default_value"
   lifecycle {
@@ -120,8 +123,9 @@ resource "aws_ssm_parameter" "defaultParameterBack" {
   }
 }
 
-resource "aws_ssm_parameter" "defaultParameterFront" {
-  name  = "/tgr/${var.env}/${var.appName}/front/default/parameter"
+
+resource "aws_ssm_parameter" "client-secret" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/client-secret"
   type  = "String"
   value = "default_value"
   lifecycle {
@@ -132,6 +136,59 @@ resource "aws_ssm_parameter" "defaultParameterFront" {
     Env = "${var.env}"
   }
 }
+
+resource "aws_ssm_parameter" "client-id" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/client-id"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "scope" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/scope"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "host" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/host"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "host-token" {
+  name  = "/tgr/${var.env}/${var.appName}/back/ws-tierra/host-token"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
 
 ######################################################################################
 
@@ -170,6 +227,36 @@ resource "aws_codebuild_project" "codebuildBack" {
                         {
                           name = "BUILD_API_ROOT_ID"
                           value = "${var.apiGatewayRootID}"
+                        },
+                        {
+                          name = "BUILD_WSN_GRANT_TYPE"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/grant-type"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_WSN_CLIENT_SECRET"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/client-secret"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_WSN_CLIENT_ID"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/client-id"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_WSN_SCOPE"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/scope"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_WSN_HOST"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/host"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_WSN_HOST_TOKEN"
+                          value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/host-token"
+                          type = "PARAMETER_STORE"
                         }
                       ]
 
@@ -233,6 +320,10 @@ resource "aws_codebuild_project" "codebuildFront" {
                           {
                             name = "BUILD_COGNITO_POOL_ARN"
                             value = "${var.cognitoPoolArn}"
+                          },
+                          {
+                            name = "BUILD_APÏ_ENDPOINT"
+                            value = "${var.apigatewayEndpoint}"
                           }
                         ]
   }

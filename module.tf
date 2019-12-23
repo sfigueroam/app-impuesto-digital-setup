@@ -122,6 +122,7 @@ module "deployment" {
   cognitoContribLogoutURI = "${module.runtime.cognitoLogoutUri}"
   cognitoLogoutURL = "${data.terraform_remote_state.cognitoAuthSetup.logoutURL}"
   cognitoPoolArn = "${data.terraform_remote_state.cognitoSetup.mainUserPoolArn}"
+  apigatewayEndpoint = "${module.runtime.apigatewayEndpoint}"
 }
 
 terraform {

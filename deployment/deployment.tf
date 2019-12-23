@@ -26,6 +26,10 @@ variable "apiGatewayRootID" {
   type = "string"
 }
 
+variable "apigatewayEndpoint" {
+  type = "string"
+}
+
 variable "frontBucketID" {
   type = "string"
 }
@@ -126,6 +130,7 @@ module "deploymentCodepipelineApp" {
   cognitoPoolArn = "${var.cognitoPoolArn}"
   codepipelineRunnerRoleArn = "${module.deploymentPermission.codepipelineRunnerRoleArn}"
   codecommitAccount = "${local.codecommitAccount}"
+  apigatewayEndpoint = "${var.apigatewayEndpoint}"
 }
 
 output "backRoleArn" {
