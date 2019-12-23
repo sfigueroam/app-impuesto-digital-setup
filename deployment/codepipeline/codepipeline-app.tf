@@ -322,7 +322,7 @@ resource "aws_codebuild_project" "codebuildFront" {
                             value = "${var.cognitoPoolArn}"
                           },
                           {
-                            name = "BUILD_APÏ_ENDPOINT"
+                            name = "BUILD_API_ENDPOINT"
                             value = "${var.apigatewayEndpoint}"
                           }
                         ]
