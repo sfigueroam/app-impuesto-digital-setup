@@ -190,6 +190,73 @@ resource "aws_ssm_parameter" "host-token" {
 }
 
 
+resource "aws_ssm_parameter" "info-perfiles-grant-type" {
+  name  = "/tgr/${var.env}/${var.appName}/back/info-perfiles/grant-type"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "info-perfiles-client-secret" {
+  name  = "/tgr/${var.env}/${var.appName}/back/info-perfiles/client-secret"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "info-perfiles-client-id" {
+  name  = "/tgr/${var.env}/${var.appName}/back/info-perfiles/client-id"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "info-perfiles-scope" {
+  name  = "/tgr/${var.env}/${var.appName}/back/info-perfiles/scope"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+resource "aws_ssm_parameter" "info-perfiles-host" {
+  name  = "/tgr/${var.env}/${var.appName}/back/info-perfiles/host"
+  type  = "String"
+  value = "default_value"
+  lifecycle {
+    ignore_changes = [ "value" ]
+  }
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+}
+
+
+
 ######################################################################################
 
 resource "aws_codebuild_project" "codebuildBack" {
@@ -256,6 +323,31 @@ resource "aws_codebuild_project" "codebuildBack" {
                         {
                           name = "BUILD_WSN_HOST_TOKEN"
                           value = "/tgr/${var.env}/${var.appName}/back/ws-tierra/host-token"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_INFO_PERFILES_GRANT_TYPE"
+                          value = "/tgr/${var.env}/${var.appName}/back/info-perfiles/grant-type"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_INFO_PERFILES_CLIENT_SECRET"
+                          value = "/tgr/${var.env}/${var.appName}/back/info-perfiles/client-secret"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_INFO_PERFILES_CLIENT_ID"
+                          value = "/tgr/${var.env}/${var.appName}/back/info-perfiles/client-id"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_INFO_PERFILES_SCOPE"
+                          value = "/tgr/${var.env}/${var.appName}/back/info-perfiles/scope"
+                          type = "PARAMETER_STORE"
+                        },
+                        {
+                          name = "BUILD_INFO_PERFILES_HOST"
+                          value = "/tgr/${var.env}/${var.appName}/back/info-perfiles/host"
                           type = "PARAMETER_STORE"
                         }
                       ]
