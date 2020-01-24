@@ -474,6 +474,77 @@ resource "aws_codebuild_project" "codebuildCloudfront" {
   }
 }
 
+
+resource "aws_codebuild_project" "codebuildSonarQube" {
+  name = "${var.appPrefix}-sonarQube"
+  build_timeout = "15"
+  service_role = "${var.cBuildRoleBack}"
+  encryption_key = "${var.kmsKey}"
+  cache {
+    type = "NO_CACHE"
+  }
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image = "aws/codebuild/nodejs:8.11.0"
+    type = "LINUX_CONTAINER"
+
+    environment_variable =
+    [
+      {
+        name = "BUILD_ENV"
+        value = "${var.env}"
+      },
+      {
+        name = "BUILD_APP_NAME"
+        value = "${var.appName}"
+      },
+      {
+        name = "BUILD_SONARQUBE_HOST"
+        value = "/tgr/sonarqube/host"
+        type = "PARAMETER_STORE"
+      },
+      {
+        name = "BUILD_SONARQUBE_LOGIN"
+        value = "/tgr/sonarqube/login"
+        type = "PARAMETER_STORE"
+      },
+      {
+        name = "BUILD_SONARQUBE_URL_DESCARGA"
+        value = "/tgr/sonarqube/url-descarga"
+        type = "PARAMETER_STORE"
+      },
+      {
+        name = "BUILD_SONARQUBE_NOMBRE_ARCHIVO"
+        value = "/tgr/sonarqube/nombre-archivo"
+        type = "PARAMETER_STORE"
+      },
+      {
+        name = "BUILD_SONARQUBE_NOMBRE_CARPETA"
+        value = "/tgr/sonarqube/nombre-carpeta"
+        type = "PARAMETER_STORE"
+      }
+
+    ]
+
+  }
+  source {
+    type = "CODEPIPELINE"
+    buildspec = "${file("${path.module}/buildspecs/buildspec-sonarqube.yml")}"
+  }
+
+  tags = {
+    Application = "${var.appName}"
+    Env = "${var.env}"
+  }
+
+}
+
+
 resource "aws_codepipeline" "codepipelineApp" {
   name = "${var.appPrefix}"
   role_arn = "${var.cPipelineRole}"
@@ -541,6 +612,23 @@ resource "aws_codepipeline" "codepipelineApp" {
 
       configuration {
         ProjectName = "${aws_codebuild_project.codebuildCloudfront.name}"
+      }
+    }
+  }
+
+  stage {
+    name = "SonarQube"
+
+    action {
+      name = "SonarQube-Publish"
+      category = "Build"
+      owner = "AWS"
+      provider = "CodeBuild"
+      version = "1"
+      input_artifacts = ["Source"]
+
+      configuration {
+        ProjectName = "${aws_codebuild_project.codebuildSonarQube.name}"
       }
     }
   }
