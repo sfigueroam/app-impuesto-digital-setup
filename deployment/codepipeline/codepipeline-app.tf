@@ -284,6 +284,10 @@ resource "aws_codebuild_project" "codebuildBack" {
                           value = "${var.env}"
                         },
                         {
+                          name = "BUILD_APP_NAME"
+                          value = "${var.appName}"
+                        },
+                        {
                           name = "BUILD_LAMBDA_ROLE_ARN"
                           value = "${var.lambdaRoleArn}"
                         },
